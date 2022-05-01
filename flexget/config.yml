@@ -1,0 +1,81 @@
+tasks:
+  Spy X Family:
+    rss: 'https://nyaa.si/?page=rss&q=spy+family+puyaSub+1080+esp&c=1_3&f=0'
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/Spy X Family/Season 01/
+  toubun no Hanayome:
+    rss: 'https://nyaa.si/?page=rss&q=puyasub+5-toubun+no+Hanayome+batch+1080&c=0_0&f=0'
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/toubun no Hanayome/
+  Ousama Ranking:
+    rss: 'https://nyaa.si/?page=rss&q=puyasub+ousama+ranking+1080&c=0_0&f=0'
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/Ousama Ranking/Season 01/
+  Tate no Yuusha:
+    rss: 'https://nyaa.si/?page=rss&q=puyasub+Tate+no+Yuusha+no+Nariagari+Season+2+1080&c=0_0&f=0'
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/Tate no Yuusha/Season 01/
+  Blue lock:
+    rss: "https://nyaa.si/?page=rss&q=puyasub+Blue_Lock+1080&c=0_0&f=0"
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/Blue lock/Season 01/
+  Attack on Titans:
+    rss: "https://nyaa.si/?page=rss&q=puyasub+1080+esp+Shingeki+no+Kyojin%3A+The+Final+Season+Part+2&c=0_0&f=0"
+    accept_all: yes
+    template: anime
+    set:
+       path: /mnt/usb/pi/2021pi/download/Anime/Attack on Titans/Final Season/
+  remove-stale-torrents:
+      from_transmission:
+        host: 192.168.31.3
+        port: 9091
+        username: transmission
+        password: 18dani27jose
+      disable: [seen, seen_info_hash]
+      if:
+        - transmission_progress == 100: accept
+        - not transmission_seed_ratio_ok: reject
+        - not transmission_idle_limit_ok: reject
+      transmission:
+        host: 192.168.31.3
+        port: 9091
+        username: transmission
+        password: 18dani27jose
+        action: remove
+templates: 
+  anime-transmission:
+    transmission:
+      host: 192.168.31.3
+      port: 9091
+      username: transmission
+      password: 18dani27jose
+      include_subs: yes
+      magnetization_timeout: 30
+  anime:
+    template: anime-transmission
+    set:
+      include_files:
+      - '*.srt'
+      - '*.sub'
+      - '*.idx'
+      - '*.ass'
+      - '*.ssa'
+schedules:
+  - tasks: '*'
+    interval:
+      hours: 24
+  - tasks: 'remove-stale-torrents'
+    interval:
+      minutes: 10
+web_server:
+  web_ui: yes

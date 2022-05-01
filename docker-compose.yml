@@ -1,0 +1,50 @@
+version: "3"
+
+
+services:
+  plex:
+    image: lscr.io/linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - "PUID=${PUID}"
+      - "PGID=${PGID}"
+      - VERSION=docker
+    volumes:
+      - "${PLEX_CONFIG_PATH}:/config"
+      - "${SERIES_PATH}:/tv"
+      - "${MOVIES_PATH}:/movies"
+    restart: unless-stopped
+  transmission:
+     image: lscr.io/linuxserver/transmission
+     container_name: transmission
+     restart: unless-stopped
+     environment:
+        - "PUID=${PUID}"
+        - "PGID=${PGID}"
+        - "TZ=${TIMEZONE}"
+        - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+        - "USER=${TRANSMISSION_USER}" #optional
+        - "PASS=${TRANSMISSION_PASS}" #optional
+     volumes:
+      - "${TRANTMISSION_CONFIG_PATH}:/config"
+      - "${DOWNLOAD_PATH}:/downloads"
+      - /path/to/watch/folder:/watch
+     ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+  flexget:
+    image: wiserain/flexget
+    container_name: flexget
+    restart: unless-stopped
+    ports :
+      - 5050:5050
+    volumes:
+      - "${FLEXGET_DATA_PATH}:/data"
+      - "${FLEXGET_CONFIG_PATH}:/config"
+    environment:
+      - "PUID=${PUID}"
+      - "PGID=${PGID}"
+      - "TZ=${TIMEZONE}"
+      - "FG_WEBUI_PASSWD=${FLEXGET_PASS}"
